@@ -149,15 +149,15 @@ void settings::createBoard(){
 
 int classicMode::checkTopLeft(int rows, int columns){
   int neighborCount = 0;
-  if(prevBoard[rows][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-
   if(prevBoard[rows + 1][columns] == 'X'){
     ++neighborCount;
   }
 
   if(prevBoard[rows + 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+
+  if(prevBoard[rows][columns + 1] == 'X'){
     ++neighborCount;
   }
 
@@ -452,4 +452,161 @@ bool classicMode::checkEmpty(){
     }
   }
   return isEmpty;
+}
+
+
+int mirrorMode::mirrorTopLeft(int rows, int columns){
+  int neighborCount = 3;
+  if(prevBoard[rows + 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows + 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns + 1] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorBottomLeft(int rows, int columns){
+  int neighborCount = 3;
+  if(prevBoard[rows - 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows - 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns + 1] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorTopRight(int rows, int columns){
+  int neighborCount = 3;
+  if(prevBoard[rows][columns - 1] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows + 1][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorBottomRight(int rows, int columns){
+  int neighborCount = 3;
+  if(prevBoard[rows - 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows - 1][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns - 1] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorTop(int rows, int columns){
+  int neighborCount = 1;
+  if(prevBoard[rows][columns - 1] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows + 1][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns + 1] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorRight(int rows, int columns){
+  int neighborCount = 1;
+  if(prevBoard[rows - 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows - 1][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorBottom(int rows, int columns){
+  int neighborCount = 1;
+  if(prevBoard[rows][columns - 1] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows - 1][columns - 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows - 1][columns] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows - 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns + 1] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int mirrorMode::mirrorLeft(int rows, int columns){
+  int neighborCount = 1;
+  if(prevBoard[rows - 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+  else if(prevBoard[rows - 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns + 1] == 'X'){
+    ++neighborCount;
+  }
+  else if(prevBoard[rows + 1][columns] == 'X'){
+    neighborCount += 2;
+  }
+
+  return neighborCount;
+}
+
+
+int donutMode::donutTopLeft(int rows, int columns){
+  int neighborCount = 
 }
