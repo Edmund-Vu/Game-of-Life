@@ -5,27 +5,38 @@
 
 using namespace std;
 
-class classicMode{
+class settings{
+  public:
+    settings();
+    ~settings();
+    int rows;
+    int columns;
+    float density;
+    string boardType;
+    string outputType;
+    string fileName;
+
+    void prompt();
+};
+
+class classicMode : public settings{
   public:
     classicMode();
     ~classicMode();
 
-    int rows;
-    int columns;
-    int genCount = 1;
+    int genCount = 0;
     char** prevBoard;
     char** currBoard;
 
-    void randomBoard(int rows, int columns, float density);
-    void fileBoard(int rows, int columns, float density);
-    int checkCornerNW(int row, int column);
-    int checkCornerNE(int row, int column);
-    int checkCornerSW(int row, int column);
-    int checkCornerSE(int row, int column);
-    int checkTop(int row, int column);
-    int checkRight(int row, int column);
-    int checkBottom(int row, int column);
-    int checkLeft(int row, int column);
+    void createBoard();
+    int checkCornerNW();
+    int checkCornerNE();
+    int checkCornerSW();
+    int checkCornerSE();
+    int checkTop();
+    int checkRight();
+    int checkBottom();
+    int checkLeft();
 
     void nextGen();
     void printGen();
