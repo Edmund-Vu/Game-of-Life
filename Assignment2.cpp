@@ -92,7 +92,7 @@ void gameOfLife::prompt(){
 
 void gameOfLife::createBoard(){
   currBoard = new char*[rowTotal];
-
+  //create boards full of dashes (-), and populate them later
   for(int i = 0; i < rowTotal; ++i){
     currBoard[i] = new char[columnTotal];
     for(int j = 0; j < columnTotal; ++j){
@@ -124,6 +124,7 @@ void gameOfLife::createBoard(){
     int xTotal = int(tileTotal * density);
 
     for(int i = 0; i < xTotal; ++i){
+      //create random coordinates to place 'X'
       int randRow = rand() % rowTotal;
       int randColumn = rand() % columnTotal;
       if(currBoard[randRow][randColumn] == '-'){
@@ -158,7 +159,7 @@ void gameOfLife::createBoard(){
   }
 }
 
-
+//check methods are fed the coordinates the function is named after
 int gameOfLife::classicTopLeft(int row, int column){
   int neighborCount = 0;
   if(prevBoard[row + 1][column] == 'X'){
@@ -334,7 +335,11 @@ int gameOfLife::checkMiddle(int row, int column){
 
 
 int gameOfLife::mirrorTopLeft(int row, int column){
-  int neighborCount = 3;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    //if the corner is occupied, it will have at least 3 neighbors
+    neighborCount += 3;
+  }
   if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
@@ -349,7 +354,10 @@ int gameOfLife::mirrorTopLeft(int row, int column){
 
 
 int gameOfLife::mirrorTopRight(int row, int column){
-  int neighborCount = 3;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 3;
+  }
   if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
@@ -364,7 +372,10 @@ int gameOfLife::mirrorTopRight(int row, int column){
 
 
 int gameOfLife::mirrorBottomRight(int row, int column){
-  int neighborCount = 3;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 3;
+  }
   if(prevBoard[row][column - 1] == 'X'){
     ++neighborCount;
   }
@@ -379,7 +390,10 @@ int gameOfLife::mirrorBottomRight(int row, int column){
 
 
 int gameOfLife::mirrorBottomLeft(int row, int column){
-  int neighborCount = 3;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 3;
+  }
   if(prevBoard[row - 1][column] == 'X'){
     ++neighborCount;
   }
@@ -394,7 +408,10 @@ int gameOfLife::mirrorBottomLeft(int row, int column){
 
 
 int gameOfLife::mirrorTop(int row, int column){
-  int neighborCount = 1;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 2;
+  }
   if(prevBoard[row][column - 1] == 'X'){
     neighborCount += 2;
   }
@@ -415,7 +432,10 @@ int gameOfLife::mirrorTop(int row, int column){
 
 
 int gameOfLife::mirrorRight(int row, int column){
-  int neighborCount = 1;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 2;
+  }
   if(prevBoard[row - 1][column] == 'X'){
     neighborCount += 2;
   }
@@ -436,7 +456,10 @@ int gameOfLife::mirrorRight(int row, int column){
 
 
 int gameOfLife::mirrorBottom(int row, int column){
-  int neighborCount = 1;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 2;
+  }
   if(prevBoard[row][column - 1] == 'X'){
     neighborCount += 2;
   }
@@ -457,7 +480,10 @@ int gameOfLife::mirrorBottom(int row, int column){
 
 
 int gameOfLife::mirrorLeft(int row, int column){
-  int neighborCount = 1;
+  int neighborCount = 0;
+  if(prevBoard[row][column] == 'X'){
+    neighborCount += 2;
+  }
   if(prevBoard[row - 1][column] == 'X'){
     neighborCount += 2;
   }
