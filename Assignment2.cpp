@@ -886,21 +886,20 @@ void gameOfLife::nextGen(){
 
 
 bool gameOfLife::checkEmpty(){
-  bool isEmpty = false;
-  if(currBoard[0][0] == '-'){
-    for(int i = 0; i < rowTotal; ++i){
-      for(int j = 0; j < columnTotal; ++j){
-        if(currBoard[i][j] == '-'){
-          isEmpty = true;
-        }
-        else{
-          isEmpty = false;
-          break;
-        }
+  for(int i = 0; i < rowTotal; ++i){
+    for(int j = 0; j < columnTotal; ++j){
+      if(currBoard[i][j] == '-'){
+        ++emptyCount;
       }
     }
   }
-  return isEmpty;
+  if(emptyCount == (rowTotal * columnTotal)){
+    return true;
+  }
+  else{
+    return false;
+  }
+  emptyCount = 0;
 }
 
 
@@ -922,6 +921,24 @@ bool gameOfLife::checkOscillation(){
 }
 
 
-bool gameOfLife::checkPatternLooping(){
-
+bool gameOfLife::checkRepeating(){
+  for(int i = 0; i < rowTotal; ++i){
+    for(int j = 0; j < columnTotal; ++j){
+      if(prevBoard[i][j] == currBoard[i][j]){
+        ++repeatingCount;
+      }
+    }
+  }
+  if(repeatingCount == (rowTotal * columnTotal)){
+    if(genCount == 0 || genCount == 1){
+      return false;
+    }
+    else{
+      return true;
+    }
+  }
+  else{
+    return false;
+  }
+  repeatingCount = 0;
 }
