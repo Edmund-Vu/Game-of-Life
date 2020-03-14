@@ -3,24 +3,16 @@
 #include <fstream>
 #include <math.h>
 #include <string>
+#include <unistd.h>
 
 using namespace std;
 
-//constructors and destructors
-settings::settings(){}
-settings::~settings(){}
-
-classicMode::classicMode(){}
-classicMode::~classicMode(){}
-
-mirrorMode::mirrorMode(){}
-mirrorMode::~mirrorMode(){}
-
-donutMode::donutMode(){}
-donutMode::~donutMode(){}
+//constructor and destructor
+gameOfLife::gameOfLife(){}
+gameOfLife::~gameOfLife(){}
 
 
-void settings::prompt(){
+void gameOfLife::prompt(){
   //strings to hold the string value of the row/column counts from the file
   string fileRows = "";
   string fileColumns = "";
@@ -29,19 +21,28 @@ void settings::prompt(){
   bool exit = true;
   //while loop to keep prompting the user for either file or random
   while(exit){
+    cout << "What game mode would you like? Type 'classic,' 'mirror,' or 'doughnut.'" << endl;
+    cin >> gameMode;
+    //turns the input into an all-lowercase string for a better conditional statement
+    for(int i = 0; i < gameMode.length(); ++i){
+      gameMode[i] = tolower(gameMode[i]);
+    }
+
     cout << "How would you like your output? Pause, Enter, or File?" << endl;
     cin >> outputType;
-    //turns the input into an all-lowercase string for a better conditional statement
-    for(int i = 0; i < outputType.length(); ++i){
-      outputType[i] = tolower(outputType[i]);
+    for(int j = 0; j < outputType.length(); ++j){
+      outputType[j] = tolower(outputType[j]);
+    }
+    if(outputType == "file"){
+      cout << "What is the name of the output file? Type the full name of the file, including the file type." << endl;
+      cin >> outputFileName;
     }
 
     cout << "Would you like a random board, or would you like to use a file? Type 'random' or 'file.'" << endl;
     cin >> boardType;
-    for(int j = 0; j < boardType.length(); ++j){
-      boardType[j] = tolower(boardType[j]);
+    for(int k = 0; k < boardType.length(); ++k){
+      boardType[k] = tolower(boardType[k]);
     }
-
     if(boardType == "file"){
       cout << "What is the name of the file? Include the file extension as well." << endl;
       cin >> fileName;
@@ -66,8 +67,8 @@ void settings::prompt(){
         }
       }
       //convert the strings read from the file into ints
-      rowTotal = stoi(fileRows);
-      columnTotal = stoi(fileColumns);
+      rowTotal = std::stoi(fileRows);
+      columnTotal = std::stoi(fileColumns);
       iStream.close();
       createBoard();
       exit = false;
@@ -89,9 +90,8 @@ void settings::prompt(){
 }
 
 
-void settings::createBoard(){
+void gameOfLife::createBoard(){
   currBoard = new char*[rowTotal];
-  prevBoard = new char*[rowTotal];
 
   for(int i = 0; i < rowTotal; ++i){
     currBoard[i] = new char[columnTotal];
@@ -100,10 +100,21 @@ void settings::createBoard(){
     }
   }
 
+  prevBoard = new char*[rowTotal];
+
   for(int i = 0; i < rowTotal; ++i){
     prevBoard[i] = new char[columnTotal];
-    for(int j = 0; j < rowTotal; ++j){
+    for(int j = 0; j < columnTotal; ++j){
       prevBoard[i][j] = '-';
+    }
+  }
+
+  secondPrevBoard = new char*[rowTotal];
+
+  for(int i = 0; i < rowTotal; ++i){
+    secondPrevBoard[i] = new char[columnTotal];
+    for(int j = 0; j < columnTotal; ++j){
+      secondPrevBoard[i][j] = '-';
     }
   }
 
@@ -135,6 +146,7 @@ void settings::createBoard(){
       iStream >> noskipws >> c;
       if(c == '-' || c == 'X'){
         currBoard[rowCount][columnCount] = c;
+        prevBoard[rowCount][columnCount] = c;
         ++columnCount;
       }
       else if(c == '\n'){
@@ -147,273 +159,456 @@ void settings::createBoard(){
 }
 
 
-int classicMode::checkTopLeft(int rows, int columns){
+int gameOfLife::classicTopLeft(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows + 1][columns] == 'X'){
+  if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns + 1] == 'X'){
+  if(prevBoard[row + 1][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns + 1] == 'X'){
+  if(prevBoard[row][column + 1]){
     ++neighborCount;
   }
-
   return neighborCount;
 }
 
 
-int classicMode::checkBottomLeft(int rows, int columns){
+int gameOfLife::classicTopRight(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows][columns + 1] == 'X'){
+  if(prevBoard[row][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns + 1] == 'X'){
+  if(prevBoard[row + 1][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns] == 'X'){
+  if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
-
   return neighborCount;
 }
 
 
-int classicMode::checkTopRight(int rows, int columns){
+int gameOfLife::classicBottomRight(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows + 1][columns] == 'X'){
+  if(prevBoard[row][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns -1] == 'X'){
+  if(prevBoard[row - 1][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns - 1] == 'X'){
+  if(prevBoard[row - 1][column] == 'X'){
     ++neighborCount;
   }
-
   return neighborCount;
 }
 
 
-int classicMode::checkBottomRight(int rows, int columns){
+int gameOfLife::classicBottomLeft(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows - 1][columns] == 'X'){
+  if(prevBoard[row - 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns - 1] == 'X'){
+  if(prevBoard[row - 1][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns - 1] == 'X'){
+  if(prevBoard[row][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  return neighborCount;
-}
-
-int classicMode::checkTop(int rows, int columns){
-  int neighborCount = 0;
-  if(prevBoard[rows][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-
-  if(prevBoard[rows + 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-
-  if(prevBoard[rows + 1][columns] == 'X'){
-    ++neighborCount;
-  }
-
-  if(prevBoard[rows + 1][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-
-  if(prevBoard[rows][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-
   return neighborCount;
 }
 
 
-int classicMode::checkRight(int rows, int columns){
+int gameOfLife::classicTop(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows - 1][columns] == 'X'){
+  if(prevBoard[row][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns-1] == 'X'){
+  if(prevBoard[row + 1][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns - 1] == 'X'){
+  if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns - 1] == 'X'){
+  if(prevBoard[row + 1][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns] == 'X'){
+  if(prevBoard[row][column + 1] == 'X'){
     ++neighborCount;
   }
-
   return neighborCount;
 }
 
 
-int classicMode::checkBottom(int rows, int columns){
+int gameOfLife::classicRight(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows][columns - 1] == 'X'){
+  if(prevBoard[row - 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns - 1] == 'X'){
+  if(prevBoard[row - 1][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns] == 'X'){
+  if(prevBoard[row][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns + 1] == 'X'){
+  if(prevBoard[row + 1][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns + 1] == 'X'){
+  if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
-
   return neighborCount;
 }
 
 
-int classicMode::checkLeft(int rows, int columns){
+int gameOfLife::classicBottom(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows - 1][columns] == 'X'){
+  if(prevBoard[row][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns + 1] == 'X'){
+  if(prevBoard[row - 1][column - 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns + 1] == 'X'){
+  if(prevBoard[row - 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns + 1] == 'X'){
+  if(prevBoard[row - 1][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns] == 'X'){
+  if(prevBoard[row][column + 1] == 'X'){
     ++neighborCount;
   }
-
   return neighborCount;
 }
 
 
-int classicMode::checkMiddle(int rows, int columns){
+int gameOfLife::classicLeft(int row, int column){
   int neighborCount = 0;
-  if(prevBoard[rows - 1][columns - 1] == 'X'){
+  if(prevBoard[row - 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns] == 'X'){
+  if(prevBoard[row - 1][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows - 1][columns + 1] == 'X'){
+  if(prevBoard[row][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows][columns + 1] == 'X'){
+  if(prevBoard[row + 1][column + 1] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns + 1] == 'X'){
+  if(prevBoard[row + 1][column] == 'X'){
     ++neighborCount;
   }
-
-  if(prevBoard[rows + 1][columns] == 'X'){
-    ++neighborCount;
-  }
-
-  if(prevBoard[rows + 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-
-  if(prevBoard[rows][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-
   return neighborCount;
 }
 
 
-void classicMode::nextGen(){
-  int neighborCount;
+int gameOfLife::checkMiddle(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorTopLeft(int row, int column){
+  int neighborCount = 3;
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1]){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorTopRight(int row, int column){
+  int neighborCount = 3;
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1]){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorBottomRight(int row, int column){
+  int neighborCount = 3;
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorBottomLeft(int row, int column){
+  int neighborCount = 3;
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorTop(int row, int column){
+  int neighborCount = 1;
+  if(prevBoard[row][column - 1] == 'X'){
+    neighborCount += 2;
+  }
+  if(prevBoard[row + 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    neighborCount += 2;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorRight(int row, int column){
+  int neighborCount = 1;
+  if(prevBoard[row - 1][column] == 'X'){
+    neighborCount += 2;
+  }
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    neighborCount += 2;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorBottom(int row, int column){
+  int neighborCount = 1;
+  if(prevBoard[row][column - 1] == 'X'){
+    neighborCount += 2;
+  }
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    neighborCount += 2;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::mirrorLeft(int row, int column){
+  int neighborCount = 1;
+  if(prevBoard[row - 1][column] == 'X'){
+    neighborCount += 2;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    neighborCount += 2;
+  }
+  return neighborCount;
+}
+
+
+void gameOfLife::printGen(){
+  bool exit = true;
+  if(outputType != "file"){
+    cout << "Generation " << genCount << endl;
+    for(int i = 0; i < rowTotal; ++i){
+      for(int j = 0; j < columnTotal; ++j){
+        cout << currBoard[i][j];
+      }
+      cout << endl;
+    }
+    ++genCount;
+    cout << endl;
+    if(outputType == "pause"){
+      sleep(1);
+    }
+    else if(outputType == "enter"){
+      while(exit){
+        cout << "Press ENTER to continue. ";
+        if(cin.get() == '\n'){
+          exit = false;
+        }
+      }
+    }
+  }
+  else{
+    ofstream oStream;
+    oStream.open(outputFileName);
+    outputContent += ("Generation ");
+    outputContent += to_string(genCount);
+    outputContent += '\n';
+    for(int i = 0; i < rowTotal; ++i){
+      for(int j = 0; j < columnTotal; ++j){
+        outputContent += currBoard[i][j];
+      }
+      outputContent += '\n';
+    }
+    outputContent += '\n';
+    ++genCount;
+    oStream << outputContent;
+    oStream.close();
+  }
+}
+
+
+void gameOfLife::nextGen(){
+  int neighborCount = 0;
+  char c;
   for(int i = 0; i < rowTotal; ++i){
     for(int j = 0; j < columnTotal; ++j){
+      secondPrevBoard[i][j] = prevBoard[i][j];
       prevBoard[i][j] = currBoard[i][j];
     }
   }
 
   for(int k = 0; k < rowTotal; ++k){
     for(int l = 0; l < columnTotal; ++l){
-      //reset the neighborCount with each iteration
-      neighborCount = 0;
-      if(prevBoard[k][l] == 'X'){
-        //check for top left or top right corners, else check top
-        if(k == 0){
-          if(l == 0){
-            neighborCount = checkTopLeft(k, l);
+      if(k == 0){
+        if(l == 0){
+          if(gameMode == "classic"){
+            neighborCount = classicTopLeft(k,l);
           }
-          else if(l == (columnTotal - 1)){
-            neighborCount = checkTopRight(k, l);
+          else if(gameMode == "mirror"){
+            neighborCount = mirrorTopLeft(k,l);
           }
-          else{
-            neighborCount = checkTop(k, l);
+        }
+        else if(l == (columnTotal - 1)){
+          if(gameMode == "classic"){
+            neighborCount = classicTopRight(k,l);
+          }
+          else if(gameMode == "mirror"){
+            neighborCount = mirrorTopRight(k,l);
+          }
+        }
+        else{
+          if(gameMode == "classic"){
+            neighborCount = classicTop(k,l);
+          }
+          else if(gameMode == "mirror"){
+            neighborCount = mirrorTop(k,l);
           }
         }
       }
-      //check for bottom left or bottom right corners, else check bottom
       else if(k == (rowTotal - 1)){
         if(l == 0){
-          neighborCount = checkBottomLeft(k, l);
+          if(gameMode == "classic"){
+            neighborCount = classicBottomLeft(k,l);
+          }
+          else if(gameMode == "mirror"){
+            neighborCount = mirrorBottomLeft(k,l);
+          }
         }
         else if(l == (columnTotal - 1)){
-          neighborCount = checkBottomRight(k, l);
+          if(gameMode == "classic"){
+            neighborCount = classicBottomRight(k,l);
+          }
+          else if(gameMode == "mirror"){
+            neighborCount = mirrorBottomRight(k,l);
+          }
         }
         else{
-          neighborCount = checkBottom(k, l);
+          if(gameMode == "classic"){
+            neighborCount = classicBottom(k,l);
+          }
+          else if(gameMode == "mirror"){
+            neighborCount = mirrorBottom(k,l);
+          }
         }
       }
       else if(l == 0){
-        //check whether it isn't a corner
-        if(k != 0 && k != (rowTotal - 1)){
-          neighborCount = checkLeft(k, l);
+        if(gameMode == "classic"){
+          neighborCount = classicLeft(k,l);
+        }
+        else if(gameMode == "mirror"){
+          neighborCount = mirrorLeft(k,l);
         }
       }
       else if(l == (columnTotal - 1)){
-        if(k != 0 && k != (rowTotal - 1)){
-          neighborCount = checkRight(k, l);
+        if(gameMode == "classic"){
+          neighborCount = classicRight(k,l);
+        }
+        else if(gameMode == "mirror"){
+          neighborCount = mirrorRight(k,l);
         }
       }
       else{
-        neighborCount = checkMiddle(k, l);
+        neighborCount = checkMiddle(k,l);
       }
       if(neighborCount <= 1){
         currBoard[k][l] = '-';
+      }
+      else if(neighborCount == 2){
+        currBoard[k][l] = currBoard[k][l];
       }
       else if(neighborCount == 3){
         currBoard[k][l] = 'X';
@@ -426,18 +621,7 @@ void classicMode::nextGen(){
 }
 
 
-void classicMode::printGen(){
-  cout << "Generation " << genCount << endl;
-  for(int i = 0; i < rowTotal; ++i){
-    for(int j = 0; j < columnTotal; ++j){
-      cout << currBoard[i][j];
-    }
-  }
-  ++genCount;
-}
-
-
-bool classicMode::checkEmpty(){
+bool gameOfLife::checkEmpty(){
   bool isEmpty = false;
   if(currBoard[0][0] == '-'){
     for(int i = 0; i < rowTotal; ++i){
@@ -447,6 +631,7 @@ bool classicMode::checkEmpty(){
         }
         else{
           isEmpty = false;
+          break;
         }
       }
     }
@@ -455,158 +640,24 @@ bool classicMode::checkEmpty(){
 }
 
 
-int mirrorMode::mirrorTopLeft(int rows, int columns){
-  int neighborCount = 3;
-  if(prevBoard[rows + 1][columns] == 'X'){
-    neighborCount += 2;
+bool gameOfLife::checkOscillation(){
+  for(int i = 0; i < rowTotal; ++i){
+    for(int j = 0; j < columnTotal; ++j){
+      if(secondPrevBoard[i][j] == currBoard[i][j]){
+        ++oscillationCount;
+      }
+    }
   }
-  else if(prevBoard[rows + 1][columns + 1] == 'X'){
-    ++neighborCount;
+  if(oscillationCount == (rowTotal * columnTotal)){
+    return true;
   }
-  else if(prevBoard[rows][columns + 1] == 'X'){
-    neighborCount += 2;
+  else{
+    return false;
   }
-
-  return neighborCount;
+  oscillationCount = 0;
 }
 
 
-int mirrorMode::mirrorBottomLeft(int rows, int columns){
-  int neighborCount = 3;
-  if(prevBoard[rows - 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows - 1][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows][columns + 1] == 'X'){
-    neighborCount += 2;
-  }
+bool gameOfLife::checkPatternLooping(){
 
-  return neighborCount;
-}
-
-
-int mirrorMode::mirrorTopRight(int rows, int columns){
-  int neighborCount = 3;
-  if(prevBoard[rows][columns - 1] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows + 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-
-  return neighborCount;
-}
-
-
-int mirrorMode::mirrorBottomRight(int rows, int columns){
-  int neighborCount = 3;
-  if(prevBoard[rows - 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows - 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows][columns - 1] == 'X'){
-    neighborCount += 2;
-  }
-
-  return neighborCount;
-}
-
-
-int mirrorMode::mirrorTop(int rows, int columns){
-  int neighborCount = 1;
-  if(prevBoard[rows][columns - 1] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows + 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows][columns + 1] == 'X'){
-    neighborCount += 2;
-  }
-
-  return neighborCount;
-}
-
-
-int mirrorMode::mirrorRight(int rows, int columns){
-  int neighborCount = 1;
-  if(prevBoard[rows - 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows - 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-
-  return neighborCount;
-}
-
-
-int mirrorMode::mirrorBottom(int rows, int columns){
-  int neighborCount = 1;
-  if(prevBoard[rows][columns - 1] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows - 1][columns - 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows - 1][columns] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows - 1][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows][columns + 1] == 'X'){
-    neighborCount += 2;
-  }
-
-  return neighborCount;
-}
-
-
-int mirrorMode::mirrorLeft(int rows, int columns){
-  int neighborCount = 1;
-  if(prevBoard[rows - 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-  else if(prevBoard[rows - 1][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns + 1] == 'X'){
-    ++neighborCount;
-  }
-  else if(prevBoard[rows + 1][columns] == 'X'){
-    neighborCount += 2;
-  }
-
-  return neighborCount;
-}
-
-
-int donutMode::donutTopLeft(int rows, int columns){
-  int neighborCount = 
 }
