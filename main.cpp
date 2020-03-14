@@ -5,15 +5,25 @@
 using namespace std;
 
 int main(int argc, char** argv){
-  bool exit = true;
   gameOfLife *game = new gameOfLife();
 
   game -> prompt();
-  for(int i = 0; i < 4; ++i){
+  for(int i = 0; i < 199; ++i){
     game -> printGen();
     game -> nextGen();
+    if(game -> checkEmpty()){
+      cout << "The board is empty." << endl;
+      break;
+    }
+    if(game -> checkOscillation()){
+      cout << "The board is oscillating." << endl;
+      break;
+    }
+    if(game -> checkRepeating()){
+      cout << "The board is repeating." << endl;
+    }
   }
-  delete game;
 
+  delete game;
   return 0;
 }
