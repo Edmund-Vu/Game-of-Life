@@ -477,6 +477,246 @@ int gameOfLife::mirrorLeft(int row, int column){
 }
 
 
+int gameOfLife::doughnutTopLeft(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[(rowTotal - 1)][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[(rowTotal - 1)][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[(rowTotal - 1)][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutTopRight(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[rowTotal - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[rowTotal - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[rowTotal - 1][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][0] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutBottomRight(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutBottomLeft(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutTop(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[rowTotal - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[rowTotal - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[rowTotal - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutRight(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][0] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][0] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutBottom(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[0][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
+int gameOfLife::doughnutLeft(int row, int column){
+  int neighborCount = 0;
+  if(prevBoard[row - 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column + 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][column] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row - 1][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  if(prevBoard[row + 1][columnTotal - 1] == 'X'){
+    ++neighborCount;
+  }
+  return neighborCount;
+}
+
+
 void gameOfLife::printGen(){
   bool exit = true;
   if(outputType != "file"){
@@ -541,6 +781,9 @@ void gameOfLife::nextGen(){
           else if(gameMode == "mirror"){
             neighborCount = mirrorTopLeft(k,l);
           }
+          else if(gameMode == "doughnut"){
+            neighborCount = doughnutTopLeft(k,l);
+          }
         }
         else if(l == (columnTotal - 1)){
           if(gameMode == "classic"){
@@ -549,6 +792,9 @@ void gameOfLife::nextGen(){
           else if(gameMode == "mirror"){
             neighborCount = mirrorTopRight(k,l);
           }
+          else{
+            neighborCount = doughnutTopRight(k,l);
+          }
         }
         else{
           if(gameMode == "classic"){
@@ -556,6 +802,9 @@ void gameOfLife::nextGen(){
           }
           else if(gameMode == "mirror"){
             neighborCount = mirrorTop(k,l);
+          }
+          else{
+            neighborCount = doughnutTop(k,l);
           }
         }
       }
@@ -567,6 +816,9 @@ void gameOfLife::nextGen(){
           else if(gameMode == "mirror"){
             neighborCount = mirrorBottomLeft(k,l);
           }
+          else{
+            neighborCount = doughnutBottomLeft(k,l);
+          }
         }
         else if(l == (columnTotal - 1)){
           if(gameMode == "classic"){
@@ -575,6 +827,9 @@ void gameOfLife::nextGen(){
           else if(gameMode == "mirror"){
             neighborCount = mirrorBottomRight(k,l);
           }
+          else{
+            neighborCount = doughnutBottomRight(k,l);
+          }
         }
         else{
           if(gameMode == "classic"){
@@ -582,6 +837,9 @@ void gameOfLife::nextGen(){
           }
           else if(gameMode == "mirror"){
             neighborCount = mirrorBottom(k,l);
+          }
+          else{
+            neighborCount = doughnutBottom(k,l);
           }
         }
       }
@@ -592,6 +850,9 @@ void gameOfLife::nextGen(){
         else if(gameMode == "mirror"){
           neighborCount = mirrorLeft(k,l);
         }
+        else{
+          neighborCount = doughnutLeft(k,l);
+        }
       }
       else if(l == (columnTotal - 1)){
         if(gameMode == "classic"){
@@ -599,6 +860,9 @@ void gameOfLife::nextGen(){
         }
         else if(gameMode == "mirror"){
           neighborCount = mirrorRight(k,l);
+        }
+        else{
+          neighborCount = doughnutRight(k,l);
         }
       }
       else{
