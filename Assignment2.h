@@ -12,6 +12,7 @@ class gameOfLife{
     int rowTotal;
     int columnTotal;
     int genCount = 0;
+    int emptyCount = 0;
     int oscillationCount = 0;
     int patternLoopingCount = 0;
     float density;
@@ -61,5 +62,4 @@ class gameOfLife{
     void nextGen();
     bool checkEmpty();
     bool checkOscillation();
-    bool checkPatternLooping();
 };
