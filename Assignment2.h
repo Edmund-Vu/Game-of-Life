@@ -15,6 +15,7 @@ class gameOfLife{
     int emptyCount = 0;
     int oscillationCount = 0;
     int patternLoopingCount = 0;
+    int repeatingCount = 0;
     float density;
     string boardType;
     string outputType;
@@ -62,4 +63,5 @@ class gameOfLife{
     void nextGen();
     bool checkEmpty();
     bool checkOscillation();
+    bool checkRepeating();
 };
